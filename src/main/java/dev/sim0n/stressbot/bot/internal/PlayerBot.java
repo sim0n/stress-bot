@@ -37,11 +37,11 @@ import java.util.function.Consumer;
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
 @Getter @Setter
-public class SimpleBot implements Bot {
+public class PlayerBot implements Bot {
+    private final Map<Integer, PacketListener> listeners = new HashMap<>();
+
     private final Consumer<ChannelHandlerContext> connectAction;
     private final Consumer<ChannelHandlerContext> disconnectAction;
-
-    private final Map<Integer, PacketListener> listeners = new HashMap<>();
 
     private BotConnectionState connectionState = BotConnectionState.LOGIN;
     private ChannelHandlerContext context;
@@ -55,7 +55,7 @@ public class SimpleBot implements Bot {
 
     private int positionUpdateTicks;
 
-    public SimpleBot(Consumer<ChannelHandlerContext> connectAction, Consumer<ChannelHandlerContext> disconnectAction) {
+    public PlayerBot(Consumer<ChannelHandlerContext> connectAction, Consumer<ChannelHandlerContext> disconnectAction) {
         this.connectAction = connectAction;
         this.disconnectAction = disconnectAction;
 

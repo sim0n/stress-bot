@@ -9,5 +9,5 @@ import java.util.function.Consumer;
  * @author sim0n
  */
 public interface BotFactory<Buf extends ByteBuf> {
-    Bot makeBot(Consumer<ChannelHandlerContext> connectAction, Consumer<ChannelHandlerContext> disconnectAction);
+    Bot makeBot(Consumer<ChannelHandlerContext> connectAction, Consumer<ChannelHandlerContext> disconnectAction, BotRepository repo);
 }

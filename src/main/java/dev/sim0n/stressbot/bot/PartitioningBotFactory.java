@@ -15,7 +15,11 @@ public class PartitioningBotFactory<Buf extends ByteBuf> implements BotFactory<B
     private final BiFunction<Consumer<ChannelHandlerContext>, Consumer<ChannelHandlerContext>, Bot> func;
 
     @Override
-    public Bot makeBot(Consumer<ChannelHandlerContext> connectAction, Consumer<ChannelHandlerContext> disconnectAction) {
-        return this.func.apply(connectAction, disconnectAction);
+    public Bot makeBot(Consumer<ChannelHandlerContext> connectAction, Consumer<ChannelHandlerContext> disconnectAction, BotRepository repo) {
+        Bot bot = this.func.apply(connectAction, disconnectAction);
+
+        repo.getBots().add(bot);
+
+        return bot;
     }
 }

@@ -1,6 +1,6 @@
 package dev.sim0n.stressbot.bot;
 
-import dev.sim0n.stressbot.bot.internal.SimpleBot;
+import dev.sim0n.stressbot.bot.internal.PlayerBot;
 import dev.sim0n.stressbot.util.PacketBuffer;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -15,11 +15,11 @@ public enum SimpleBotFactory implements BotFactory<PacketBuffer> {
     private final BotFactory<PacketBuffer> innerBotFactory;
 
     SimpleBotFactory() {
-        this.innerBotFactory = new PartitioningBotFactory<>(SimpleBot::new);
+        this.innerBotFactory = new PartitioningBotFactory<>(PlayerBot::new);
     }
 
     @Override
-    public Bot makeBot(Consumer<ChannelHandlerContext> connectAction, Consumer<ChannelHandlerContext> disconnectAction) {
-        return this.innerBotFactory.makeBot(connectAction, disconnectAction);
+    public Bot makeBot(Consumer<ChannelHandlerContext> connectAction, Consumer<ChannelHandlerContext> disconnectAction, BotRepository repo) {
+        return this.innerBotFactory.makeBot(connectAction, disconnectAction, repo);
     }
 }

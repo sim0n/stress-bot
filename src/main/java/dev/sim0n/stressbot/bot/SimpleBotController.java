@@ -1,5 +1,7 @@
 package dev.sim0n.stressbot.bot;
 
+import dev.sim0n.stressbot.bot.action.ConnectAction;
+import dev.sim0n.stressbot.bot.action.DisconnectAction;
 import dev.sim0n.stressbot.network.PacketDecoder;
 import dev.sim0n.stressbot.network.PacketEncoder;
 import dev.sim0n.stressbot.network.PacketHandler;
@@ -31,11 +33,27 @@ public class SimpleBotController<Buf extends ByteBuf> implements BotController<B
     private final String address;
     private final int port;
     private final BotFactory<Buf> botFactory;
+
+    @Override
+    public void start(String address, int port, int botCount, long loginDelay) {
+        for (int i = 0; i < botCount; i++) {
+            String name = "rowin_" + i;
+
+            Consumer<ChannelHandlerContext> connectAction = new ConnectAction(address, port, name);
+            Consumer<ChannelHandlerContext> disconnectAction = new DisconnectAction(name);
+
+            this.makeBot(connectAction, disconnectAction);
+            try {
+                Thread.sleep(loginDelay);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     @Override
     public void makeBot(Consumer<ChannelHandlerContext> connectAction, Consumer<ChannelHandlerContext> disconnectAction) {
-        Bot bot = this.botFactory.makeBot(connectAction, disconnectAction);
-
-        this.repo.getBots().add(bot);
+        Bot bot = this.botFactory.makeBot(connectAction, disconnectAction, this.repo);
 
         try {
             Bootstrap bootstrap = new Bootstrap();
