@@ -58,7 +58,7 @@ public class Start {
                 loginDelay = loginDelaySpec.value(options);
             }
 
-            if (options.has("H")){
+            if (options.has("A")){
                 address = serverAddressSpec.value(options);
             }
 
