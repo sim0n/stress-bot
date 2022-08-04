@@ -29,6 +29,7 @@ public enum PacketRepository {
     {
         {
             this.registerIn(0x00, SKeepAlive.class);
+            this.registerIn(0x01, CChatMessage.class);
             this.registerIn(0x08, SPosLook.class);
             this.registerIn(0x32, SConfirmTransaction.class);
 
