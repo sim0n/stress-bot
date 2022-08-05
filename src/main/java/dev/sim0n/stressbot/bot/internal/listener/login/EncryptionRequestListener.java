@@ -4,6 +4,7 @@ import dev.sim0n.stressbot.bot.Bot;
 import dev.sim0n.stressbot.packet.internal.login.clientbound.SEncryptionRequest;
 import dev.sim0n.stressbot.packet.internal.login.serverbound.CEncryptionResponse;
 import dev.sim0n.stressbot.packet.internal.listener.LoginEnsuredFilteredPacketListener;
+import dev.sim0n.stressbot.util.NettyUtil;
 import dev.sim0n.stressbot.util.crypt.CryptManager;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -25,7 +26,6 @@ public class EncryptionRequestListener extends LoginEnsuredFilteredPacketListene
             encryptionResponse.setSecretKeyEncrypted(CryptManager.encryptData(publicKey, secretkey.getEncoded()));
             encryptionResponse.setVerifyTokenEncrypted(CryptManager.encryptData(publicKey, packet.getVerifyToken()));
         }
-
-        ctx.writeAndFlush(encryptionResponse.toBuffer(ctx));
+        NettyUtil.sendPacket(ctx, encryptionResponse);
     }
 }

@@ -4,6 +4,7 @@ import dev.sim0n.stressbot.bot.Bot;
 import dev.sim0n.stressbot.bot.task.AbstractTask;
 import dev.sim0n.stressbot.packet.PacketRepository;
 import dev.sim0n.stressbot.packet.internal.play.serverbound.CAnimation;
+import dev.sim0n.stressbot.util.NettyUtil;
 import io.netty.channel.ChannelHandlerContext;
 
 /**
@@ -15,6 +16,6 @@ public class SwingTask extends AbstractTask {
 
     @Override
     public void run(ChannelHandlerContext ctx, Bot bot) {
-        ctx.writeAndFlush(PacketRepository.PLAY.makePacket(CAnimation.class).toBuffer(ctx));
+        NettyUtil.sendPacket(ctx, PacketRepository.PLAY.makePacket(CAnimation.class));
     }
 }
