@@ -1,6 +1,6 @@
 package dev.sim0n.stressbot.packet.internal.listener;
 
-import dev.sim0n.stressbot.bot.BotConnectionState;
+import dev.sim0n.stressbot.packet.connection.ConnectionState;
 import dev.sim0n.stressbot.packet.AbstractPacket;
 
 /**
@@ -8,7 +8,7 @@ import dev.sim0n.stressbot.packet.AbstractPacket;
  */
 public abstract class PlayEnsuredFilteredPacketListener<Packet extends AbstractPacket> extends FilteredPacketListener<Packet> {
     public PlayEnsuredFilteredPacketListener() {
-        super(bot -> bot.getConnectionState() == BotConnectionState.PLAY);
+        super(bot -> bot.getConnectionState() == ConnectionState.PLAY);
     }
 }
 

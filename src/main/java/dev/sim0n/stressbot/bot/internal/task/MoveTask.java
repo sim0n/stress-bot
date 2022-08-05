@@ -1,7 +1,7 @@
 package dev.sim0n.stressbot.bot.internal.task;
 
 import dev.sim0n.stressbot.bot.Bot;
-import dev.sim0n.stressbot.bot.task.Task;
+import dev.sim0n.stressbot.bot.task.AbstractTask;
 import dev.sim0n.stressbot.util.RandomUtil;
 import dev.sim0n.stressbot.util.location.Location;
 import io.netty.channel.ChannelHandlerContext;
@@ -11,14 +11,10 @@ import io.netty.channel.ChannelHandlerContext;
  *
  * This task will automatically move the bot in a random direction
  */
-public class MoveTask extends Task {
+public class MoveTask extends AbstractTask {
     private float direction = (float) RandomUtil.getRandomInt(0, 360);
 
     private int runs;
-
-    public MoveTask() {
-        super(1, false);
-    }
 
     @Override
     public void run(ChannelHandlerContext ctx, Bot bot) {
@@ -43,7 +39,7 @@ public class MoveTask extends Task {
      * @param bot The bot
      */
     private void move(Bot bot) {
-        Location location = this.getMovedLocation(bot.getLocation(), 0.2);
+        Location location = this.getMovedLocation(bot.getLocation(), bot.getMoveSpeed());
 
         double x = location.getX();
         double y = location.getY();

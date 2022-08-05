@@ -1,7 +1,7 @@
 package dev.sim0n.stressbot.bot.internal.task;
 
 import dev.sim0n.stressbot.bot.Bot;
-import dev.sim0n.stressbot.bot.task.Task;
+import dev.sim0n.stressbot.bot.task.AbstractTask;
 import dev.sim0n.stressbot.packet.PacketRepository;
 import dev.sim0n.stressbot.packet.internal.play.serverbound.CAnimation;
 import io.netty.channel.ChannelHandlerContext;
@@ -11,10 +11,7 @@ import io.netty.channel.ChannelHandlerContext;
  *
  * This task will make the bot randomly swing
  */
-public class SwingTask extends Task {
-    public SwingTask() {
-        super(20, true);
-    }
+public class SwingTask extends AbstractTask {
 
     @Override
     public void run(ChannelHandlerContext ctx, Bot bot) {
