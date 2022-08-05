@@ -1,5 +1,7 @@
-package dev.sim0n.stressbot.bot;
+package dev.sim0n.stressbot.bot.factory;
 
+import dev.sim0n.stressbot.bot.Bot;
+import dev.sim0n.stressbot.bot.BotRepository;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 

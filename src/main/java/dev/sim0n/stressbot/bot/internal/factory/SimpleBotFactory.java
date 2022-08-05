@@ -1,5 +1,8 @@
-package dev.sim0n.stressbot.bot;
+package dev.sim0n.stressbot.bot.internal.factory;
 
+import dev.sim0n.stressbot.bot.Bot;
+import dev.sim0n.stressbot.bot.BotRepository;
+import dev.sim0n.stressbot.bot.factory.BotFactory;
 import dev.sim0n.stressbot.bot.internal.PlayerBot;
 import dev.sim0n.stressbot.util.PacketBuffer;
 import io.netty.channel.ChannelHandlerContext;

@@ -1,26 +1,22 @@
 package dev.sim0n.stressbot.bot.internal;
 
 import dev.sim0n.stressbot.bot.*;
+import dev.sim0n.stressbot.bot.internal.factory.task.SimpleTaskFactory;
 import dev.sim0n.stressbot.bot.internal.listener.login.EncryptionRequestListener;
 import dev.sim0n.stressbot.bot.internal.listener.login.LoginSuccessListener;
 import dev.sim0n.stressbot.bot.internal.listener.login.SetCompressionListener;
 import dev.sim0n.stressbot.bot.internal.listener.play.ConfirmTransactionListener;
 import dev.sim0n.stressbot.bot.internal.listener.play.KeepAliveListener;
 import dev.sim0n.stressbot.bot.internal.listener.play.PosLookListener;
-import dev.sim0n.stressbot.packet.AbstractPacket;
-import dev.sim0n.stressbot.packet.PacketDirection;
+import dev.sim0n.stressbot.packet.*;
+import dev.sim0n.stressbot.packet.connection.ConnectionState;
 import dev.sim0n.stressbot.packet.internal.login.clientbound.SEncryptionRequest;
 import dev.sim0n.stressbot.packet.internal.login.clientbound.SLoginSuccess;
 import dev.sim0n.stressbot.packet.internal.login.clientbound.SSetCompression;
 import dev.sim0n.stressbot.packet.internal.play.clientbound.SConfirmTransaction;
 import dev.sim0n.stressbot.packet.internal.play.clientbound.SKeepAlive;
 import dev.sim0n.stressbot.packet.internal.play.clientbound.SPosLook;
-import dev.sim0n.stressbot.packet.PacketListener;
-import dev.sim0n.stressbot.packet.PacketRepository;
-import dev.sim0n.stressbot.packet.internal.play.serverbound.CPlayer;
-import dev.sim0n.stressbot.packet.internal.play.serverbound.CPlayerLook;
-import dev.sim0n.stressbot.packet.internal.play.serverbound.CPlayerPos;
-import dev.sim0n.stressbot.packet.internal.play.serverbound.CPlayerPosLook;
+import dev.sim0n.stressbot.packet.internal.play.serverbound.*;
 import dev.sim0n.stressbot.bot.task.Scheduler;
 import dev.sim0n.stressbot.util.NettyUtil;
 import dev.sim0n.stressbot.util.location.Location;
@@ -43,21 +39,25 @@ public class PlayerBot implements Bot {
     private final Consumer<ChannelHandlerContext> connectAction;
     private final Consumer<ChannelHandlerContext> disconnectAction;
 
-    private BotConnectionState connectionState = BotConnectionState.LOGIN;
-    private ChannelHandlerContext context;
+    private final Scheduler scheduler;
 
-    private final Scheduler scheduler = new Scheduler();
+    private ConnectionState connectionState;
+    private ChannelHandlerContext context;
 
     private Location lastLocation = new Location();
     private Location location = new Location();
 
+    private int positionUpdateTicks;
     private int ticksExisted;
 
-    private int positionUpdateTicks;
+    private double moveSpeed = 0.2;
 
     public PlayerBot(Consumer<ChannelHandlerContext> connectAction, Consumer<ChannelHandlerContext> disconnectAction) {
         this.connectAction = connectAction;
         this.disconnectAction = disconnectAction;
+
+        this.scheduler = new Scheduler(SimpleTaskFactory.INSTANCE);
+        this.connectionState = ConnectionState.LOGIN;
 
         // LOGIN
         this.listeners.put(PacketRepository.LOGIN.getPacketId(PacketDirection.CLIENTBOUND, SEncryptionRequest.class), new EncryptionRequestListener());
@@ -71,11 +71,6 @@ public class PlayerBot implements Bot {
     }
 
     @Override
-    public void onPacketReceive(ChannelHandlerContext ctx, Bot bot, AbstractPacket packet) {
-        this.listeners.get(packet.getPacketId()).onPacketReceive(ctx, bot, packet);
-    }
-
-    @Override
     public void connect(ChannelHandlerContext ctx) {
         this.connectAction.accept(ctx);
     }
@@ -86,8 +81,13 @@ public class PlayerBot implements Bot {
     }
 
     @Override
+    public void onPacketReceive(ChannelHandlerContext ctx, Bot bot, AbstractPacket packet) {
+        this.listeners.get(packet.getPacketId()).onPacketReceive(ctx, bot, packet);
+    }
+
+    @Override
     public void tick() {
-        if (this.context == null || this.connectionState != BotConnectionState.PLAY)
+        if (this.context == null || this.connectionState != ConnectionState.PLAY)
             return;
 
         ++this.ticksExisted;
@@ -128,6 +128,15 @@ public class PlayerBot implements Bot {
     }
 
     @Override
+    public void sendMessage(String message) {
+        CChatMessage packet = PacketRepository.PLAY.makePacket(CChatMessage.class);
+        {
+            packet.setMessage(message);
+        }
+        NettyUtil.sendPacket(this.context, packet);
+    }
+
+    @Override
     public void updateLocation(double x, double y, double z, float yaw, float pitch) {
         this.lastLocation = this.location.clone();
 
@@ -140,6 +149,11 @@ public class PlayerBot implements Bot {
 
         this.location.update(x, y, z, yaw, pitch);
         this.location.setOnGround(onGround);
+    }
+
+    @Override
+    public void toggleTask(String task) {
+        //this.scheduler.
     }
 
 }

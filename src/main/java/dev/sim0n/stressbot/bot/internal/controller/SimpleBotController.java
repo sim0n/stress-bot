@@ -1,7 +1,12 @@
-package dev.sim0n.stressbot.bot;
+package dev.sim0n.stressbot.bot.internal.controller;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import dev.sim0n.stressbot.bot.Bot;
+import dev.sim0n.stressbot.bot.BotRepository;
 import dev.sim0n.stressbot.bot.action.ConnectAction;
 import dev.sim0n.stressbot.bot.action.DisconnectAction;
+import dev.sim0n.stressbot.bot.controller.BotController;
+import dev.sim0n.stressbot.bot.factory.BotFactory;
 import dev.sim0n.stressbot.network.PacketDecoder;
 import dev.sim0n.stressbot.network.PacketEncoder;
 import dev.sim0n.stressbot.network.PacketHandler;
@@ -19,6 +24,9 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 /**
