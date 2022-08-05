@@ -15,11 +15,7 @@ import java.util.function.Consumer;
 public enum SimpleBotFactory implements BotFactory<PacketBuffer> {
     INSTANCE;
 
-    private final BotFactory<PacketBuffer> innerBotFactory;
-
-    SimpleBotFactory() {
-        this.innerBotFactory = new PartitioningBotFactory<>(PlayerBot::new);
-    }
+    private final BotFactory<PacketBuffer> innerBotFactory = new PartitioningBotFactory<>(PlayerBot::new);
 
     @Override
     public Bot makeBot(Consumer<ChannelHandlerContext> connectAction, Consumer<ChannelHandlerContext> disconnectAction, BotRepository repo) {
