@@ -29,11 +29,11 @@ public enum PacketRepository {
     {
         {
             this.registerIn(0x00, SKeepAlive.class);
-            this.registerIn(0x01, CChatMessage.class);
             this.registerIn(0x08, SPosLook.class);
             this.registerIn(0x32, SConfirmTransaction.class);
 
             this.registerOut(0x00, CKeepAlive.class);
+            this.registerOut(0x01, CChatMessage.class);
             this.registerOut(0x03, CPlayer.class);
             this.registerOut(0x04, CPlayerPos.class);
             this.registerOut(0x05, CPlayerLook.class);
