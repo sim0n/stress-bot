@@ -8,6 +8,7 @@ Stress Bot is a fully customizable Minecraft server stress testing tool.
 * Customizable login delay between bots
 * Bots can move around
 * Bots can swing
+* Extremely lightweight (5-6% CPU usage on a Ryzen 9 5950x for 500 bots)
 
 ## Requirements
 
