@@ -42,7 +42,7 @@ public class SimpleBotController<Buf extends ByteBuf> implements BotController<B
     @Override
     public void start(String address, int port, int botCount, long loginDelay) {
         for (int i = 0; i < botCount; i++) {
-            String name = usernamePrefix + "_" + i;
+            String name = this.usernamePrefix + "_" + i;
 
             Consumer<ChannelHandlerContext> connectAction = new ConnectAction(address, port, name);
             Consumer<ChannelHandlerContext> disconnectAction = new DisconnectAction(name);
