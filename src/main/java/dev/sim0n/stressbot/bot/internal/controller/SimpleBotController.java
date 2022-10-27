@@ -1,6 +1,5 @@
 package dev.sim0n.stressbot.bot.internal.controller;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import dev.sim0n.stressbot.bot.Bot;
 import dev.sim0n.stressbot.bot.BotRepository;
 import dev.sim0n.stressbot.bot.action.ConnectAction;
@@ -24,9 +23,6 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 /**
@@ -41,11 +37,12 @@ public class SimpleBotController<Buf extends ByteBuf> implements BotController<B
     private final String address;
     private final int port;
     private final BotFactory<Buf> botFactory;
+    private final String usernamePrefix;
 
     @Override
     public void start(String address, int port, int botCount, long loginDelay) {
         for (int i = 0; i < botCount; i++) {
-            String name = "rowin_" + i;
+            String name = usernamePrefix + "_" + i;
 
             Consumer<ChannelHandlerContext> connectAction = new ConnectAction(address, port, name);
             Consumer<ChannelHandlerContext> disconnectAction = new DisconnectAction(name);
@@ -93,7 +90,7 @@ public class SimpleBotController<Buf extends ByteBuf> implements BotController<B
     }
 
     public static AddAddress builder() {
-        return address -> port -> factory -> new SimpleBotController<>(address, port, factory);
+        return address -> port -> factory -> usernamePrefix -> new SimpleBotController<>(address, port, factory, usernamePrefix);
     }
 
     public interface AddAddress {
@@ -105,6 +102,10 @@ public class SimpleBotController<Buf extends ByteBuf> implements BotController<B
     }
 
     public interface AddFactory<Buf extends ByteBuf> {
-        BotController<Buf> factory(BotFactory<Buf> factory);
+        AddUsernamePrefix<Buf> factory(BotFactory<Buf> factory);
+    }
+
+    public interface AddUsernamePrefix<Buf extends ByteBuf> {
+        BotController<Buf> usernamePrefix(String usernamePrefix);
     }
 }

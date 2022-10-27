@@ -26,6 +26,7 @@ Option                       Description
 -D, --login-delay <Integer>  the bot login delay
 -H, -h, --help               displays a help menu
 -P, --port <Integer>         the server port
+-U, --username <String>      username prefix
 ```
 
 ## Example Usage

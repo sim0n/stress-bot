@@ -31,6 +31,12 @@ public class Start {
                 .withRequiredArg()
                 .ofType(String.class);
 
+        OptionSpec<String> usernamePrefixSpec = optionParser
+            .acceptsAll(ImmutableList.of("U", "username"), "the bot username prefix")
+            .withOptionalArg()
+            .defaultsTo("rowin")
+            .ofType(String.class);
+
         OptionSpec<Integer> serverPortSpec = optionParser
                 .acceptsAll(ImmutableList.of("P", "port"), "the server port")
                 .withRequiredArg()
@@ -66,7 +72,7 @@ public class Start {
                 port = serverPortSpec.value(options);
             }
 
-            StressBot stressBot = new StressBot(address, port, botCount, loginDelay);
+            StressBot stressBot = new StressBot(address, port, botCount, loginDelay, usernamePrefixSpec.value(options));
             stressBot.start();
         } catch (Exception e) {
             e.printStackTrace();
