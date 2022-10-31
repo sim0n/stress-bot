@@ -35,12 +35,14 @@ public class StressBot {
     private final int port;
     private final int botCount;
     private final long loginDelay;
+    private final String usernamePrefix;
 
-    public StressBot(String address, int port, int botCount, int loginDelay) {
+    public StressBot(String address, int port, int botCount, int loginDelay, String usernamePrefix) {
         this.address = address;
         this.port = port;
         this.botCount = botCount;
         this.loginDelay = loginDelay;
+        this.usernamePrefix = usernamePrefix;
 
         LOGGER.setUseParentHandlers(false);
 
@@ -76,7 +78,8 @@ public class StressBot {
         this.botController = SimpleBotController.builder()
                 .address(this.address)
                 .port(this.port)
-                .factory(SimpleBotFactory.INSTANCE);
+                .factory(SimpleBotFactory.INSTANCE)
+                .usernamePrefix(this.usernamePrefix);
 
         this.botController.start(this.address, this.port, this.botCount, this.loginDelay);
     }
