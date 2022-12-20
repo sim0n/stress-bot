@@ -20,19 +20,15 @@ public class ConnectAction implements Consumer<ChannelHandlerContext> {
 
     @Override
     public void accept(ChannelHandlerContext ctx) {
-        CHandshake handshake = PacketRepository.HANDSHAKING.makePacket(CHandshake.class);
-        {
-            handshake.setProtocolVersion(47); // 1.8
-            handshake.setAddress(this.address);
-            handshake.setPort(this.port);
-            handshake.setRequestedState(2); // request login
-        }
-        NettyUtil.sendPacket(ctx, handshake);
+        NettyUtil.sendPacket(ctx, PacketRepository.HANDSHAKING, CHandshake.class, packet -> {
+            packet.setProtocolVersion(47); // 1.8
+            packet.setAddress(this.address);
+            packet.setPort(this.port);
+            packet.setRequestedState(2); // request login
+        });
 
-        CLoginStart loginStart = PacketRepository.LOGIN.makePacket(CLoginStart.class);
-        {
-            loginStart.setName(this.name);
-        }
-        NettyUtil.sendPacket(ctx, loginStart);
+        NettyUtil.sendPacket(ctx, PacketRepository.LOGIN, CLoginStart.class, packet -> {
+            packet.setName(this.name);
+        });
     }
 }

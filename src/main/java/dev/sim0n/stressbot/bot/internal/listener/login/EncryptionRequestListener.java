@@ -21,11 +21,9 @@ public class EncryptionRequestListener extends LoginEnsuredFilteredPacketListene
         PublicKey publicKey = packet.getPublicKey();
         SecretKey secretkey = CryptManager.createNewSharedKey();
 
-        CEncryptionResponse encryptionResponse = new CEncryptionResponse();
-        {
+        NettyUtil.sendPacket(ctx, new CEncryptionResponse(), encryptionResponse -> {
             encryptionResponse.setSecretKeyEncrypted(CryptManager.encryptData(publicKey, secretkey.getEncoded()));
             encryptionResponse.setVerifyTokenEncrypted(CryptManager.encryptData(publicKey, packet.getVerifyToken()));
-        }
-        NettyUtil.sendPacket(ctx, encryptionResponse);
+        });
     }
 }

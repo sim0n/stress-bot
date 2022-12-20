@@ -16,7 +16,6 @@ public final class CommandExecutor {
     private final Command command;
 
     @Getter
-
     private final String label;
 
     @Getter

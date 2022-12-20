@@ -15,12 +15,10 @@ public class ConfirmTransactionListener extends PlayEnsuredFilteredPacketListene
 
     @Override
     public void onPacketReceive(ChannelHandlerContext ctx, Bot bot, SConfirmTransaction packet) {
-        CConfirmTransaction clientTransaction = PacketRepository.PLAY.makePacket(CConfirmTransaction.class);
-        {
-            clientTransaction.setWindowId(packet.getWindowId());
-            clientTransaction.setUid(packet.getUid());
-            clientTransaction.setAccepted(packet.isAccepted());
-        }
-        NettyUtil.sendPacket(ctx, clientTransaction);
+        NettyUtil.sendPacket(ctx, PacketRepository.PLAY, CConfirmTransaction.class, confirmTransaction -> {
+            confirmTransaction.setWindowId(packet.getWindowId());
+            confirmTransaction.setUid(packet.getUid());
+            confirmTransaction.setAccepted(packet.isAccepted());
+        });
     }
 }

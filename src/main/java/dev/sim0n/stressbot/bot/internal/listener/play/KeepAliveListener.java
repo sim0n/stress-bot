@@ -15,10 +15,8 @@ public class KeepAliveListener extends PlayEnsuredFilteredPacketListener<SKeepAl
 
     @Override
     public void onPacketReceive(ChannelHandlerContext ctx, Bot bot, SKeepAlive packet) {
-        CKeepAlive clientKeepAlive = PacketRepository.PLAY.makePacket(CKeepAlive.class);
-        {
-            clientKeepAlive.setKey(packet.getKey());
-        }
-        NettyUtil.sendPacket(ctx, clientKeepAlive);
+        NettyUtil.sendPacket(ctx, PacketRepository.PLAY, CKeepAlive.class, keepAlive -> {
+            keepAlive.setKey(packet.getKey());
+        });
     }
 }

@@ -97,16 +97,16 @@ public class PlayerBot implements Bot {
         boolean shouldUpdatePosition = this.location.distance(this.lastLocation) > 0.03 || this.positionUpdateTicks >= 20;
         boolean shouldUpdateRotation = this.location.getPitch() != this.lastLocation.getPitch() || this.location.getYaw() != this.lastLocation.getYaw();
 
-        CPlayer packet;
+        Class<? extends CPlayer> clazz;
 
         if (shouldUpdatePosition && shouldUpdateRotation) {
-            packet = PacketRepository.PLAY.makePacket(CPlayerPosLook.class);
+            clazz = CPlayerPosLook.class;
         } else if (shouldUpdatePosition) {
-            packet = PacketRepository.PLAY.makePacket(CPlayerPos.class);
+            clazz = CPlayerPos.class;
         } else if (shouldUpdateRotation) {
-            packet = PacketRepository.PLAY.makePacket(CPlayerLook.class);
+            clazz = CPlayerLook.class;
         } else {
-            packet = PacketRepository.PLAY.makePacket(CPlayer.class);
+            clazz = CPlayer.class;
         }
 
         ++this.positionUpdateTicks;
@@ -115,25 +115,23 @@ public class PlayerBot implements Bot {
             this.positionUpdateTicks = 0;
         }
 
-        packet.setX(location.getX());
-        packet.setY(location.getY());
-        packet.setZ(location.getZ());
+        NettyUtil.sendPacket(this.context, PacketRepository.PLAY, clazz, packet -> {
+            packet.setX(location.getX());
+            packet.setY(location.getY());
+            packet.setZ(location.getZ());
 
-        packet.setYaw(location.getYaw());
-        packet.setPitch(location.getPitch());
+            packet.setYaw(location.getYaw());
+            packet.setPitch(location.getPitch());
 
-        packet.setOnGround(location.isOnGround());
-
-        NettyUtil.sendPacket(this.context, packet);
+            packet.setOnGround(location.isOnGround());
+        });
     }
 
     @Override
     public void sendMessage(String message) {
-        CChatMessage packet = PacketRepository.PLAY.makePacket(CChatMessage.class);
-        {
+        NettyUtil.sendPacket(this.context, PacketRepository.PLAY, CChatMessage.class, packet -> {
             packet.setMessage(message);
-        }
-        NettyUtil.sendPacket(this.context, packet);
+        });
     }
 
     @Override

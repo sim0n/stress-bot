@@ -15,19 +15,16 @@ import io.netty.channel.ChannelHandlerContext;
  */
 public class PosLookListener extends PlayEnsuredFilteredPacketListener<SPosLook> {
     private final BiCallOnce<Bot, ChannelHandlerContext> callOnce = new BiCallOnce<>((bot, ctx) -> {
-        CEntityAction entityAction = PacketRepository.PLAY.makePacket(CEntityAction.class);
-        {
-            entityAction.setAction(CEntityAction.Action.START_SPRINTING);
-        }
-        NettyUtil.sendPacket(ctx, entityAction);
+        NettyUtil.sendPacket(ctx, PacketRepository.PLAY, CEntityAction.class, packet -> {
+            packet.setAction(CEntityAction.Action.START_SPRINTING);
+        });
     });
 
     @Override
     public void onPacketReceive(ChannelHandlerContext ctx, Bot bot, SPosLook packet) {
         bot.updateLocation(packet.getX(), packet.getY(), packet.getZ(), packet.getYaw(), packet.getPitch(), false);
 
-        CPlayerPosLook playerPosLook = PacketRepository.PLAY.makePacket(CPlayerPosLook.class);
-        {
+        NettyUtil.sendPacket(ctx, PacketRepository.PLAY, CPlayerPosLook.class, playerPosLook -> {
             playerPosLook.setX(packet.getX());
             playerPosLook.setY(packet.getY());
             playerPosLook.setZ(packet.getZ());
@@ -36,8 +33,7 @@ public class PosLookListener extends PlayEnsuredFilteredPacketListener<SPosLook>
             playerPosLook.setPitch(packet.getPitch());
 
             playerPosLook.setOnGround(false);
-        }
-        NettyUtil.sendPacket(ctx, playerPosLook);
+        });
 
         // only send the sprinting state once
         this.callOnce.call(bot, ctx);
